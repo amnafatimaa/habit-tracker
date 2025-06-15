@@ -14,8 +14,8 @@ const PLACEHOLDER_HABITS_DATA = [
     emoji: '💧',
     frequency: 'daily',
     color: '#60a5fa',
-    days: [true, true, false, true, false, false, false],
-    streak: 2,
+    days: [false, false, false, false, false, false, false],
+    streak: 0,
     lastChecked: null,
   },
   {
@@ -24,8 +24,8 @@ const PLACEHOLDER_HABITS_DATA = [
     emoji: '📖',
     frequency: 'monthly',
     color: '#fbbf24',
-    days: [true, false, true, false, true, false, false, true, false, false, false, true],
-    streak: 2,
+    days: [false, false, false, false, false, false, false, false, false, false, false, false],
+    streak: 0,
     lastChecked: null,
   },
 ];
