@@ -123,11 +123,4 @@ function HabitCard({ habit, idx, updateHabit, deleteHabit }) {
   );
 }
 
-function pastel(i) {
-  const colors = [
-    '#fff6f6', '#f6fff6', '#f6f6ff', '#fffbe6', '#e6f7ff', '#f6e6ff', '#e6fff9', '#fff0f6'
-  ];
-  return colors[i % colors.length];
-}
-
 export default HabitCard; 

@@ -84,7 +84,7 @@ function App() {
           {placeholderHabits.map((habit, idx) => (
             <HabitCard key={habit.id} habit={habit} idx={idx} updateHabit={updatePlaceholderHabit} deleteHabit={deletePlaceholderHabit} />
           ))}
-        </div>
+      </div>
       ) : (
         <HabitGrid habits={habits} updateHabit={updateHabit} deleteHabit={deleteHabit} />
       )}
