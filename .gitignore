@@ -7,6 +7,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
 dist
 dist-ssr
@@ -29,3 +30,18 @@ dist-ssr
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Node REPL history
+.node_repl_history
+
+# Build output
+build/
+out/
+
+# Coverage directory
+coverage/
+
+# Cache directories
+.cache/
+.npm/
+.eslintcache

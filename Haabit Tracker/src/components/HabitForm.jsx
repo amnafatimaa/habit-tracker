@@ -22,9 +22,9 @@ function HabitForm({ onAdd, onClose }) {
     else if (frequency === 'weekly') days = Array(4).fill(false); // 4 weeks in a month
     else days = Array(12).fill(false); // 12 months in a year
     onAdd({
-      id: Date.now(),
+      id: Date.now().toString(), // Ensure string ID
       name: name.trim(),
-      emoji: emoji.trim(),
+      emoji: emoji.trim() || '', // Default to empty string if no emoji
       frequency,
       color,
       days,
@@ -35,22 +35,23 @@ function HabitForm({ onAdd, onClose }) {
     setEmoji('');
     setFrequency('daily');
     setColor(getRandomColor());
+    onClose(); // Close after adding
   };
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
-      <form className="modal" onClick={e => e.stopPropagation()} onSubmit={handleSubmit}>
+      <form className="modal" onClick={(e) => e.stopPropagation()} onSubmit={handleSubmit}>
         <label>
           Habit Name*
-          <input value={name} onChange={e => setName(e.target.value)} required maxLength={32} />
+          <input value={name} onChange={(e) => setName(e.target.value)} required maxLength={32} />
         </label>
         <label>
           Emoji/Icon
-          <input value={emoji} onChange={e => setEmoji(e.target.value)} maxLength={2} placeholder="e.g. 🏃" />
+          <input value={emoji} onChange={(e) => setEmoji(e.target.value)} maxLength={2} placeholder="e.g. 🏃" />
         </label>
         <label>
           Frequency
-          <select value={frequency} onChange={e => setFrequency(e.target.value)}>
+          <select value={frequency} onChange={(e) => setFrequency(e.target.value)}>
             <option value="daily">Daily</option>
             <option value="weekly">Weekly</option>
             <option value="monthly">Monthly</option>
@@ -58,7 +59,12 @@ function HabitForm({ onAdd, onClose }) {
         </label>
         <label>
           Card Color
-          <input type="color" value={color} onChange={e => setColor(e.target.value)} style={{width:'3rem',height:'2rem',border:'none',background:'none',padding:0,marginLeft:'0.5rem',verticalAlign:'middle'}} />
+          <input
+            type="color"
+            value={color}
+            onChange={(e) => setColor(e.target.value)}
+            style={{ width: '3rem', height: '2rem', border: 'none', background: 'none', padding: 0, marginLeft: '0.5rem', verticalAlign: 'middle' }}
+          />
         </label>
         <div className="modal-actions">
           <button type="button" className="cancel" onClick={onClose}>Cancel</button>
@@ -69,4 +75,4 @@ function HabitForm({ onAdd, onClose }) {
   );
 }
 
-export default HabitForm; 
+export default HabitForm;

@@ -14,7 +14,7 @@ const PLACEHOLDER_HABITS_DATA = [
     emoji: '💧',
     frequency: 'daily',
     color: '#60a5fa',
-    days: [false, false, false, false, false, false, false],
+    days: Array(7).fill(false),
     streak: 0,
     lastChecked: null,
   },
@@ -24,81 +24,110 @@ const PLACEHOLDER_HABITS_DATA = [
     emoji: '📖',
     frequency: 'monthly',
     color: '#fbbf24',
-    days: [false, false, false, false, false, false, false, false, false, false, false, false],
+    days: Array(12).fill(false),
     streak: 0,
     lastChecked: null,
   },
 ];
 
 function App() {
-  const [habits, setHabits] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-  const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem(THEME_KEY) === 'dark' ||
-      (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const [habits, setHabits] = useState(() => {
+    const saved = localStorage.getItem(LOCAL_KEY);
+    console.log('Loaded habits from localStorage:', saved); // Debug log
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved, (key, value) => {
+          return key === 'lastChecked' && value ? new Date(value) : value;
+        });
+        // Only use parsed data if it’s a non-empty array with valid habit structure
+        if (Array.isArray(parsed) && parsed.length > 0 && parsed.every(h => h.id && h.days)) {
+          return parsed;
+        }
+      } catch (e) {
+        console.error('Failed to parse habits:', e);
+      }
+    }
+    console.log('Falling back to PLACEHOLDER_HABITS_DATA');
+    return [...PLACEHOLDER_HABITS_DATA]; // Return a new array to avoid reference issues
   });
-  const [placeholderHabits, setPlaceholderHabits] = useState(PLACEHOLDER_HABITS_DATA);
 
-  // Dark mode effect
-  useEffect(() => {
-    document.body.classList.toggle('dark', darkMode);
-    localStorage.setItem(THEME_KEY, darkMode ? 'dark' : 'light');
-  }, [darkMode]);
+  const [theme, setTheme] = useState(() => {
+    const stored = localStorage.getItem(THEME_KEY);
+    return stored === 'dark' || stored === 'light' ? stored : 'dark';
+  });
 
-  // Load from localStorage
-  useEffect(() => {
-    const data = localStorage.getItem(LOCAL_KEY);
-    if (data) setHabits(JSON.parse(data));
-  }, []);
+  const [showForm, setShowForm] = useState(false);
 
-  // Save to localStorage
   useEffect(() => {
-    localStorage.setItem(LOCAL_KEY, JSON.stringify(habits));
+    document.body.classList.toggle('dark', theme === 'dark');
+    try {
+      localStorage.setItem(THEME_KEY, theme);
+    } catch (e) {
+      console.error('Failed to save theme:', e);
+    }
+  }, [theme]);
+
+  useEffect(() => {
+    try {
+      const serialized = JSON.stringify(habits, (key, value) => {
+        return key === 'lastChecked' ? (value instanceof Date ? value.toISOString() : value) : value;
+      });
+      localStorage.setItem(LOCAL_KEY, serialized);
+      console.log('Habits saved to localStorage:', habits); // Debug log
+    } catch (e) {
+      console.error('Failed to save habits:', e);
+    }
   }, [habits]);
 
-  const addHabit = (habit) => {
-    setHabits([...habits, habit]);
+  const addHabit = (newHabit) => {
+    setHabits((prev) => [...prev, { ...newHabit, id: Date.now().toString() }]);
+    console.log('Habit added:', newHabit); // Debug add
   };
 
-  const updateHabit = (idx, updated) => {
-    setHabits(habits.map((h, i) => (i === idx ? updated : h)));
+  const updateHabit = (index, updatedHabit) => {
+    setHabits((prev) => {
+      const newHabits = [...prev];
+      newHabits[index] = { ...newHabits[index], ...updatedHabit };
+      console.log('Habit updated at index', index, 'with:', updatedHabit); // Debug update
+      return newHabits;
+    });
   };
 
-  const deleteHabit = (idx) => {
-    setHabits(habits.filter((_, i) => i !== idx));
-  };
-
-  // Placeholder handlers
-  const updatePlaceholderHabit = (idx, updated) => {
-    setPlaceholderHabits(placeholderHabits.map((h, i) => (i === idx ? updated : h)));
-  };
-  const deletePlaceholderHabit = (idx) => {
-    setPlaceholderHabits(placeholderHabits.filter((_, i) => i !== idx));
+  const deleteHabit = (id) => {
+    setHabits((prev) => prev.filter((h) => h.id !== id));
+    console.log('Habit deleted with id:', id); // Debug delete
   };
 
   return (
-    <>
-      <Header darkMode={darkMode} onToggleTheme={() => setDarkMode(d => !d)} />
-      {habits.length === 0 ? (
+    <div className={`app-container ${theme === 'dark' ? 'dark' : ''}`}>
+      <Header theme={theme} onToggleTheme={() => setTheme(theme === 'dark' ? 'light' : 'dark')} />
+      <main className="habit-container">
         <div className="habit-grid">
-          {placeholderHabits.map((habit, idx) => (
-            <HabitCard key={habit.id} habit={habit} idx={idx} updateHabit={updatePlaceholderHabit} deleteHabit={deletePlaceholderHabit} />
+          {habits.map((habit, idx) => (
+            <HabitCard
+              key={habit.id}
+              habit={habit}
+              idx={idx}
+              updateHabit={updateHabit}
+              deleteHabit={deleteHabit}
+            />
           ))}
-      </div>
-      ) : (
-        <HabitGrid habits={habits} updateHabit={updateHabit} deleteHabit={deleteHabit} />
-      )}
-      <button className="fab" onClick={() => setShowForm(true)} title="Add Habit">+</button>
-      {showForm && (
-        <HabitForm
-          onClose={() => setShowForm(false)}
-          onAdd={(habit) => {
-            addHabit(habit);
-            setShowForm(false);
-          }}
-        />
-      )}
-    </>
+        </div>
+        <button
+          className="fab"
+          onClick={() => setShowForm(true)}
+          title="Add Habit"
+        >
+          +
+        </button>
+        {showForm && (
+          <HabitForm
+            onClose={() => setShowForm(false)}
+            onAdd={addHabit}
+          />
+        )}
+      </main>
+    </div>
   );
 }
 

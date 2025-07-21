@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 
 const dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 const weekLabels = ['W1', 'W2', 'W3', 'W4'];
@@ -6,20 +6,18 @@ const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Se
 
 function getCurrentPeriodIdx(frequency) {
   const d = new Date();
-  if (frequency === 'daily') return (d.getDay() + 6) % 7; // Monday=0
-  if (frequency === 'weekly') return getWeekOfMonth(d) - 1; // 0-based
+  if (frequency === 'daily') return (d.getDay() + 6) % 7;
+  if (frequency === 'weekly') return getWeekOfMonth(d) - 1;
   if (frequency === 'monthly') return d.getMonth();
   return 0;
 }
 
 function getWeekOfMonth(date) {
-  // Returns 1-based week of month
   const firstDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
   return Math.ceil((date.getDate() + firstDay - 1) / 7);
 }
 
 function calculateStreak(days, currentIdx) {
-  // Streak is the number of consecutive checked periods up to and including the current period, going backwards
   let streak = 0;
   for (let i = currentIdx; i >= 0; i--) {
     if (days[i]) streak++;
@@ -59,38 +57,31 @@ function HabitCard({ habit, idx, updateHabit, deleteHabit }) {
     updateHabit(idx, { ...habit, days: newDays, streak: newStreak, lastChecked: new Date() });
   };
 
-  // Reset logic for each frequency
-  React.useEffect(() => {
+  useEffect(() => {
     const now = new Date();
     const last = habit.lastChecked ? new Date(habit.lastChecked) : null;
     let shouldReset = false;
     if (!last) shouldReset = true;
     else if (frequency === 'daily') {
-      // Reset if new week (ISO week)
       shouldReset = now.getFullYear() !== last.getFullYear() || getWeekNumber(now) !== getWeekNumber(last);
     } else if (frequency === 'weekly') {
-      // Reset if new month
       shouldReset = now.getFullYear() !== last.getFullYear() || now.getMonth() !== last.getMonth();
     } else if (frequency === 'monthly') {
-      // Reset if new year
       shouldReset = now.getFullYear() !== last.getFullYear();
     }
     if (shouldReset) {
       updateHabit(idx, { ...habit, days: Array(habit.days.length).fill(false), streak: 0, lastChecked: now });
     }
-    // eslint-disable-next-line
-  }, []);
+  }, [idx, habit.lastChecked, frequency, updateHabit]);
 
   function getWeekNumber(d) {
-    // ISO week number
     d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
-    const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-    const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1)/7);
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
     return weekNo;
   }
 
-  // Stats
   const bestStreak = useMemo(() => calculateBestStreak(habit.days), [habit.days]);
   const completion = useMemo(() => calculateCompletion(habit.days), [habit.days]);
 
@@ -98,7 +89,6 @@ function HabitCard({ habit, idx, updateHabit, deleteHabit }) {
     <div className="habit-card" style={{ background: 'var(--card-bg)' }}>
       <div className="habit-emoji">{habit.emoji || '🌱'}</div>
       <div className="habit-name">{habit.name}</div>
-      {/* Mini calendar/heatmap style row */}
       <div className="checkbox-row">
         {labels.map((d, i) => (
           <div
@@ -115,12 +105,12 @@ function HabitCard({ habit, idx, updateHabit, deleteHabit }) {
           </div>
         ))}
       </div>
-      <div className="streak">🏆 Streak: {bestStreak} &nbsp;✅ {completion}%</div>
-      <button className="delete-btn" title="Delete" onClick={() => deleteHabit(idx)}>
+      <div className="streak">🏆 Streak: {bestStreak} ✅ {completion}%</div>
+      <button className="delete-btn" title="Delete" onClick={() => deleteHabit(habit.id)}>
         <span className="trash" role="img" aria-label="Delete">🗑️</span>
       </button>
     </div>
   );
 }
 
-export default HabitCard; 
+export default HabitCard;
