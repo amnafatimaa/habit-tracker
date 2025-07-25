@@ -167,9 +167,6 @@ body {
   transform: rotate(5deg);
   transition: transform 0.3s ease;
 }
-.habit-card:hover .habit-name {
-  /* color: #d6336c; */
-}
 .habit-card .habit-emoji {
   font-size: 2rem;
   margin-bottom: 0.5rem;
@@ -376,4 +373,72 @@ body {
   pointer-events: none;
   opacity: 0.95;
   z-index: 10;
+}
+
+.todos-table-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.filter-section {
+  margin-bottom: 20px;
+}
+.filter-section input,
+.filter-section select {
+  margin-right: 10px;
+  padding: 5px;
+}
+
+.add-todo-form,
+.edit-todo-form {
+  margin-bottom: 20px;
+}
+.add-todo-form input,
+.add-todo-form select,
+.edit-todo-form input,
+.edit-todo-form select {
+  margin-right: 10px;
+  padding: 5px;
+}
+.add-todo-form button,
+.edit-todo-form button {
+  padding: 5px 10px;
+}
+
+.todos-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+.todos-table th,
+.todos-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+.todos-table th {
+  background-color: #f4f4f4;
+  cursor: pointer;
+}
+.todos-table th:hover {
+  background-color: #e0e0e0;
+}
+.todos-table button {
+  margin-right: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.pagination {
+  display: flex;
+  gap: 5px;
+}
+.pagination button {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+.pagination button.active {
+  background-color: #007bff;
+  color: white;
 }

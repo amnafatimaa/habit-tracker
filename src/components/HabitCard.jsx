@@ -116,11 +116,11 @@ function HabitCard({ habit, idx, updateHabit, deleteHabit }) {
         ))}
       </div>
       <div className="streak">🏆 Streak: {bestStreak} &nbsp;✅ {completion}%</div>
-      <button className="delete-btn" title="Delete" onClick={() => deleteHabit(idx)}>
+      <button className="delete-btn" title="Delete" onClick={() => deleteHabit(habit.id)}>
         <span className="trash" role="img" aria-label="Delete">🗑️</span>
       </button>
     </div>
   );
 }
 
-export default HabitCard; 
+export default HabitCard;
