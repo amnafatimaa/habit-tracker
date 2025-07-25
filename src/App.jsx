@@ -34,7 +34,6 @@ const PLACEHOLDER_HABITS_DATA = [
 function App() {
   const [habits, setHabits] = useState(() => {
     const saved = localStorage.getItem(LOCAL_KEY);
-    console.log('Loaded habits from localStorage:', saved);
     if (saved) {
       try {
         const parsed = JSON.parse(saved, (key, value) => {
@@ -47,24 +46,20 @@ function App() {
         console.error('Failed to parse habits:', e);
       }
     }
-    console.log('Falling back to PLACEHOLDER_HABITS_DATA');
     return [...PLACEHOLDER_HABITS_DATA];
   });
 
   const [theme, setTheme] = useState(() => {
     const stored = localStorage.getItem(THEME_KEY);
-    console.log('Loaded theme from localStorage:', stored);
     return stored === 'dark' || stored === 'light' ? stored : 'dark';
   });
 
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
-    console.log('Applying theme:', theme);
     document.body.classList.toggle('dark', theme === 'dark');
     try {
       localStorage.setItem(THEME_KEY, theme);
-      console.log('Theme saved to localStorage:', theme);
     } catch (e) {
       console.error('Failed to save theme:', e);
     }
@@ -76,7 +71,6 @@ function App() {
         return key === 'lastChecked' ? (value instanceof Date ? value.toISOString() : value) : value;
       });
       localStorage.setItem(LOCAL_KEY, serialized);
-      console.log('Habits saved to localStorage:', habits);
     } catch (e) {
       console.error('Failed to save habits:', e);
     }
@@ -84,21 +78,18 @@ function App() {
 
   const addHabit = (newHabit) => {
     setHabits((prev) => [...prev, { ...newHabit, id: Date.now().toString() }]);
-    console.log('Habit added:', newHabit);
   };
 
   const updateHabit = (index, updatedHabit) => {
     setHabits((prev) => {
       const newHabits = [...prev];
       newHabits[index] = { ...newHabits[index], ...updatedHabit };
-      console.log('Habit updated at index', index, 'with:', updatedHabit);
       return newHabits;
     });
   };
 
   const deleteHabit = (id) => {
     setHabits((prev) => prev.filter((h) => h.id !== id));
-    console.log('Habit deleted with id:', id);
   };
 
   return (

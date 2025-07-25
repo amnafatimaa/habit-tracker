@@ -375,201 +375,295 @@ body {
   z-index: 10;
 }
 
-/* Reset and base styles for TodosTable */
-.todos-wrapper {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  color: var(--text);
-  width: 100%;
-}
-
-h2 {
-  text-align: center;
-  color: var(--text);
-  margin-bottom: 20px;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-}
-
-/* Add Todo Section */
-.add-todo {
+/* Reset and base styles for App */
+.min-h-screen {
+  min-height: 100vh;
+  background: var(--bg);
+  padding: 2rem 1rem 4rem 1rem;
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+  justify-content: center;
+  align-items: flex-start;
+  transition: background 0.3s, color 0.3s;
 }
 
-.add-todo input {
-  flex-grow: 1;
-  padding: 0.5rem 0.7rem;
-  border: 1px solid var(--input-border);
-  border-radius: 0.7rem;
-  font-size: 1rem;
-  background: var(--input-bg);
-  color: var(--text);
-  transition: border-color 0.2s ease;
-}
-
-.add-todo input:focus {
-  outline: none;
-  border-color: var(--fab-bg);
-  box-shadow: 0 0 5px rgba(125, 214, 192, 0.3); /* Adjusted for fab-bg */
-}
-
-.add-todo button {
-  padding: 0.5rem 1.2rem;
-  background: var(--fab-bg);
-  color: #fff;
-  border: none;
-  border-radius: 0.7rem;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.2s ease;
-}
-
-.add-todo button:hover {
-  background: var(--fab-hover);
-  transform: translateY(-2px);
-}
-
-/* Table Styles */
-table {
+.max-w-md {
+  max-width: 900px; /* Match .app-container and .habit-grid max-width */
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 1.5rem; /* Adjusted for consistency with habit-grid gap */
-}
-
-thead {
-  background-color: var(--card-bg);
-}
-
-th {
-  padding: 1rem;
-  text-align: left;
-  font-weight: 600;
-  color: var(--text);
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-  border-bottom: 2px solid var(--input-border);
-}
-
-tbody tr {
-  background-color: var(--card-bg);
+  background: var(--card-bg);
   border-radius: 1.2rem;
   box-shadow: var(--card-shadow);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  position: relative;
-  overflow: hidden;
+  padding: 2rem;
+  color: var(--text);
 }
 
-tbody tr:hover {
-  transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-  cursor: pointer;
-  z-index: 2;
-}
-
-td {
-  padding: 1rem;
-  font-size: 1rem;
+/* Header */
+h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 2rem;
+  letter-spacing: 0.02em;
   color: var(--text);
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
-td:first-child {
-  font-weight: 600;
+/* Error Message */
+.mb-4 {
+  margin-bottom: 1rem;
 }
 
-td input[type="text"] {
-  width: 100%;
-  padding: 0.5rem 0.7rem;
-  border: 1px solid var(--input-border);
+.bg-red-100 {
+  background-color: #fee2e2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
   border-radius: 0.7rem;
-  font-size: 1rem;
+  padding: 0.5rem 0.7rem;
+  text-align: center;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.dark .bg-red-100 {
+  background-color: #451a1a;
+  border-color: #7f1d1d;
+  color: #f87171;
+}
+
+/* Add Todo Input */
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
+.flex {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.px-4,
+.py-2 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.border,
+.border-gray-300 {
+  border: 1px solid var(--input-border);
+}
+
+.rounded-lg {
+  border-radius: 0.7rem;
+}
+
+.focus\:outline-none:focus {
+  outline: none;
+}
+
+.focus\:ring-2:focus {
+  box-shadow: 0 0 0 2px rgba(125, 214, 192, 0.5); /* Adjusted for --fab-bg */
+}
+
+.focus\:border-transparent:focus {
+  border-color: transparent;
+}
+
+.bg-blue-500 {
+  background-color: var(--fab-bg);
+}
+
+.text-white {
+  color: #fff;
+}
+
+.hover\:bg-blue-600:hover {
+  background-color: var(--fab-hover);
+}
+
+.disabled\:opacity-50:disabled {
+  opacity: 0.5;
+}
+
+.disabled\:cursor-not-allowed:disabled {
+  cursor: not-allowed;
+}
+
+.transition-colors {
+  transition: background-color 0.2s ease;
+}
+
+/* Todo List */
+.space-y-2 > * + * {
+  margin-top: 0.5rem;
+}
+
+.p-4 {
+  padding: 1rem;
+}
+
+.border-gray-200 {
+  border: 1px solid var(--input-border);
+}
+
+.bg-green-50 {
+  background-color: #ecfdf5;
+}
+
+.dark .bg-green-50 {
+  background-color: #164e39;
+}
+
+.bg-white {
+  background-color: var(--card-bg);
+}
+
+.rounded {
+  border-radius: 0.7rem;
+}
+
+.transition-all {
+  transition: all 0.2s ease;
+}
+
+.line-through {
+  text-decoration: line-through;
+}
+
+.text-gray-500 {
+  color: #6b7280;
+}
+
+.text-gray-800 {
+  color: #1f2937;
+}
+
+.dark .text-gray-800 {
+  color: #d1d5db;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.ml-4 {
+  margin-left: 1rem;
+}
+
+.gap-1 {
+  gap: 0.25rem;
+}
+
+.px-3,
+.py-1 {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.bg-orange-500 {
+  background-color: #f97316;
+}
+
+.hover\:bg-orange-600:hover {
+  background-color: #ea580c;
+}
+
+.bg-green-500 {
+  background-color: #10b981;
+}
+
+.hover\:bg-green-600:hover {
+  background-color: #059669;
+}
+
+.bg-red-500 {
+  background-color: #ef4444;
+}
+
+.hover\:bg-red-600:hover {
+  background-color: #dc2626;
+}
+
+.shadow-sm {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.duration-200 {
+  transition-duration: 200ms;
+}
+
+/* Edit Mode */
+input[type="text"] {
+  border: 1px solid var(--input-border);
   background: var(--input-bg);
   color: var(--text);
+  border-radius: 0.7rem;
+  padding: 0.5rem 0.7rem;
   transition: border-color 0.2s ease;
 }
 
-td input[type="text"]:focus {
+input[type="text"]:focus {
   outline: none;
   border-color: var(--fab-bg);
   box-shadow: 0 0 5px rgba(125, 214, 192, 0.3);
 }
 
-td button {
-  padding: 0.5rem 1.2rem;
-  margin-right: 0.5rem;
-  border: none;
-  border-radius: 0.7rem;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
-  background: var(--fab-bg);
-  color: #fff;
-  font-weight: 500;
-}
-
-td button:hover {
-  background: var(--fab-hover);
-  transform: translateY(-2px);
-}
-
-td button:last-child {
-  background: #f44336;
-}
-
-td button:last-child:hover {
-  background: #da190b;
-}
-
 /* Empty State */
-tbody tr td[colSpan="3"] {
-  background-color: var(--card-bg);
+.text-center {
   text-align: center;
-  font-style: italic;
-  color: var(--text);
-  border-radius: 1.2rem;
-  box-shadow: var(--card-shadow);
 }
 
-/* Custom Checkbox Styling (for completed status) */
-td:nth-child(2) {
-  font-size: 1.2rem;
+.py-8 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+/* Todo Count */
+.mt-6 {
+  margin-top: 1.5rem;
+}
+
+.text-gray-500 {
+  color: #6b7280;
 }
 
 /* Responsive Design */
 @media (max-width: 600px) {
-  .todos-wrapper {
-    padding: 10px;
+  .max-w-md {
+    padding: 1.2rem 0.7rem;
+    border-radius: 0.7rem;
   }
 
-  table {
-    border-spacing: 0 1rem;
-  }
-
-  th, td {
-    padding: 0.7rem;
-    font-size: 0.9rem;
-  }
-
-  .add-todo {
+  .flex {
     flex-direction: column;
   }
 
-  .add-todo input,
-  .add-todo button {
+  input,
+  button {
     width: 100%;
   }
 
-  .habit-grid,
-  table {
-    overflow-x: auto;
-    width: 100vw; /* Ensure full viewport width for scrolling */
-    margin-left: -1rem; /* Offset padding */
-    margin-right: -1rem; /* Offset padding */
+  .p-4 {
+    padding: 0.7rem;
   }
 
-  tbody tr {
-    min-width: 300px; /* Ensure cards are readable on small screens */
+  .space-y-2 > * + * {
+    margin-top: 0.3rem;
   }
 }
