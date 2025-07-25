@@ -3,6 +3,7 @@ import Header from './components/Header';
 import HabitGrid from './components/HabitGrid';
 import HabitForm from './components/HabitForm';
 import HabitCard from './components/HabitCard';
+import TodosTable from "./components/TodosTable";
 
 const LOCAL_KEY = 'habitkit.habits';
 const THEME_KEY = 'habitkit.theme';
@@ -129,6 +130,7 @@ function App() {
           />
         )}
       </main>
+      <TodosTable />
     </div>
   );
 }

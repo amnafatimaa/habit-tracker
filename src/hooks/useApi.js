@@ -1,108 +1,138 @@
-import { useState, useEffect } from 'react';
-import debounce from 'lodash/debounce';
+// Todos CRUD App with React + API Integration
+// This assumes you're using a basic React app with functional components.
+// This version includes full CRUD functionality using the public Hashnode Todos API.
 
-function useApi() {
-  const [habits, setHabits] = useState([]);
+import React, { useEffect, useState } from 'react';
+import './Todos.css';
+
+const API_URL = 'https://freeapi.hashnode.space/todos';
+
+export default function Todos() {
+  const [todos, setTodos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [newTodo, setNewTodo] = useState('');
+  const [editingId, setEditingId] = useState(null);
+  const [editedText, setEditedText] = useState('');
 
-  const API_URL = 'https://api.freeapi.app/api/v1/todos';
+  useEffect(() => {
+    fetchTodos();
+  }, []);
 
-  const fetchHabits = async () => {
+  const fetchTodos = async () => {
     setLoading(true);
     try {
       const response = await fetch(API_URL);
-      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
       const data = await response.json();
-      if (data.success) {
-        setHabits(data.data.data.map(h => ({
-          ...h,
-          days: Array(h.frequency === 'daily' ? 7 : h.frequency === 'weekly' ? 4 : 12).fill(false),
-          streak: h.streak || 0,
-          lastChecked: h.lastChecked || null,
-        })));
-      } else {
-        throw new Error('Failed to fetch habits');
-      }
-      setError(null);
-    } catch (err) {
-      setError(err.message);
+      setTodos(data);
+    } catch (error) {
+      console.error('Failed to fetch todos:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchHabits();
-  }, []);
-
-  const createHabit = async (habit) => {
-    setLoading(true);
+  const handleCreate = async () => {
+    if (!newTodo) return;
     try {
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: habit.name,
-          completed: false,
-          emoji: habit.emoji,
-          frequency: habit.frequency,
-          color: habit.color,
-          streak: 0,
-          lastChecked: null,
-        }),
+        body: JSON.stringify({ todo: newTodo, completed: false, userId: 1 })
       });
-      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-      const data = await response.json();
-      if (data.success) {
-        setHabits([...habits, { ...data.data, days: habit.days, streak: 0, lastChecked: null }]);
-      }
+      const created = await response.json();
+      setTodos(prev => [...prev, created]);
+      setNewTodo('');
     } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+      console.error('Create error:', err);
     }
   };
 
-  const updateHabit = async (id, habit) => {
-    setLoading(true);
+  const handleDelete = async (id) => {
+    try {
+      await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+      setTodos(prev => prev.filter(todo => todo.id !== id));
+    } catch (err) {
+      console.error('Delete error:', err);
+    }
+  };
+
+  const handleEdit = (id, text) => {
+    setEditingId(id);
+    setEditedText(text);
+  };
+
+  const handleUpdate = async (id) => {
     try {
       const response = await fetch(`${API_URL}/${id}`, {
-        method: 'PATCH',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(habit),
+        body: JSON.stringify({ todo: editedText })
       });
-      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-      const data = await response.json();
-      if (data.success) {
-        setHabits(habits.map(h => h._id === id ? { ...h, ...data.data } : h));
-      }
+      const updated = await response.json();
+      setTodos(prev => prev.map(todo => (todo.id === id ? updated : todo)));
+      setEditingId(null);
+      setEditedText('');
     } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+      console.error('Update error:', err);
     }
   };
 
-  const deleteHabit = async (id) => {
-    setLoading(true);
-    try {
-      const response = await fetch(`${API_URL}/${id}`, {
-        method: 'DELETE',
-      });
-      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-      const data = await response.json();
-      if (data.success) {
-        setHabits(habits.filter(h => h._id !== id));
-      }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  return (
+    <div className="todos-container">
+      <h2>Todos Table</h2>
+      <input
+        type="text"
+        placeholder="Add new todo"
+        value={newTodo}
+        onChange={e => setNewTodo(e.target.value)}
+      />
+      <button onClick={handleCreate}>Add</button>
 
-  return { habits, loading, error, createHabit, updateHabit, deleteHabit };
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>Todo</th>
+              <th>Completed</th>
+              <th>User ID</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {todos.map(todo => (
+              <tr key={todo.id}>
+                <td>
+                  {editingId === todo.id ? (
+                    <input
+                      value={editedText}
+                      onChange={e => setEditedText(e.target.value)}
+                    />
+                  ) : (
+                    todo.todo
+                  )}
+                </td>
+                <td>{todo.completed ? '✅' : '❌'}</td>
+                <td>{todo.userId}</td>
+                <td>
+                  {editingId === todo.id ? (
+                    <>
+                      <button onClick={() => handleUpdate(todo.id)}>Save</button>
+                      <button onClick={() => setEditingId(null)}>Cancel</button>
+                    </>
+                  ) : (
+                    <>
+                      <button onClick={() => handleEdit(todo.id, todo.todo)}>Edit</button>
+                      <button onClick={() => handleDelete(todo.id)}>Delete</button>
+                    </>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
 }
-
-export default useApi;
