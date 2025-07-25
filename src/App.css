@@ -375,70 +375,201 @@ body {
   z-index: 10;
 }
 
-.todos-table-container {
-  padding: 20px;
-  max-width: 800px;
+/* Reset and base styles for TodosTable */
+.todos-wrapper {
+  max-width: 900px;
   margin: 0 auto;
-}
-
-.filter-section {
-  margin-bottom: 20px;
-}
-.filter-section input,
-.filter-section select {
-  margin-right: 10px;
-  padding: 5px;
-}
-
-.add-todo-form,
-.edit-todo-form {
-  margin-bottom: 20px;
-}
-.add-todo-form input,
-.add-todo-form select,
-.edit-todo-form input,
-.edit-todo-form select {
-  margin-right: 10px;
-  padding: 5px;
-}
-.add-todo-form button,
-.edit-todo-form button {
-  padding: 5px 10px;
-}
-
-.todos-table {
+  padding: 20px;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  color: var(--text);
   width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-}
-.todos-table th,
-.todos-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
-}
-.todos-table th {
-  background-color: #f4f4f4;
-  cursor: pointer;
-}
-.todos-table th:hover {
-  background-color: #e0e0e0;
-}
-.todos-table button {
-  margin-right: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
 }
 
-.pagination {
+h2 {
+  text-align: center;
+  color: var(--text);
+  margin-bottom: 20px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* Add Todo Section */
+.add-todo {
   display: flex;
-  gap: 5px;
+  gap: 10px;
+  margin-bottom: 20px;
 }
-.pagination button {
-  padding: 5px 10px;
+
+.add-todo input {
+  flex-grow: 1;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--input-border);
+  border-radius: 0.7rem;
+  font-size: 1rem;
+  background: var(--input-bg);
+  color: var(--text);
+  transition: border-color 0.2s ease;
+}
+
+.add-todo input:focus {
+  outline: none;
+  border-color: var(--fab-bg);
+  box-shadow: 0 0 5px rgba(125, 214, 192, 0.3); /* Adjusted for fab-bg */
+}
+
+.add-todo button {
+  padding: 0.5rem 1.2rem;
+  background: var(--fab-bg);
+  color: #fff;
+  border: none;
+  border-radius: 0.7rem;
+  font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
+  transition: background 0.2s, transform 0.2s ease;
 }
-.pagination button.active {
-  background-color: #007bff;
-  color: white;
+
+.add-todo button:hover {
+  background: var(--fab-hover);
+  transform: translateY(-2px);
+}
+
+/* Table Styles */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 1.5rem; /* Adjusted for consistency with habit-grid gap */
+}
+
+thead {
+  background-color: var(--card-bg);
+}
+
+th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  border-bottom: 2px solid var(--input-border);
+}
+
+tbody tr {
+  background-color: var(--card-bg);
+  border-radius: 1.2rem;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+tbody tr:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  z-index: 2;
+}
+
+td {
+  padding: 1rem;
+  font-size: 1rem;
+  color: var(--text);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+td:first-child {
+  font-weight: 600;
+}
+
+td input[type="text"] {
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--input-border);
+  border-radius: 0.7rem;
+  font-size: 1rem;
+  background: var(--input-bg);
+  color: var(--text);
+  transition: border-color 0.2s ease;
+}
+
+td input[type="text"]:focus {
+  outline: none;
+  border-color: var(--fab-bg);
+  box-shadow: 0 0 5px rgba(125, 214, 192, 0.3);
+}
+
+td button {
+  padding: 0.5rem 1.2rem;
+  margin-right: 0.5rem;
+  border: none;
+  border-radius: 0.7rem;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+  background: var(--fab-bg);
+  color: #fff;
+  font-weight: 500;
+}
+
+td button:hover {
+  background: var(--fab-hover);
+  transform: translateY(-2px);
+}
+
+td button:last-child {
+  background: #f44336;
+}
+
+td button:last-child:hover {
+  background: #da190b;
+}
+
+/* Empty State */
+tbody tr td[colSpan="3"] {
+  background-color: var(--card-bg);
+  text-align: center;
+  font-style: italic;
+  color: var(--text);
+  border-radius: 1.2rem;
+  box-shadow: var(--card-shadow);
+}
+
+/* Custom Checkbox Styling (for completed status) */
+td:nth-child(2) {
+  font-size: 1.2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .todos-wrapper {
+    padding: 10px;
+  }
+
+  table {
+    border-spacing: 0 1rem;
+  }
+
+  th, td {
+    padding: 0.7rem;
+    font-size: 0.9rem;
+  }
+
+  .add-todo {
+    flex-direction: column;
+  }
+
+  .add-todo input,
+  .add-todo button {
+    width: 100%;
+  }
+
+  .habit-grid,
+  table {
+    overflow-x: auto;
+    width: 100vw; /* Ensure full viewport width for scrolling */
+    margin-left: -1rem; /* Offset padding */
+    margin-right: -1rem; /* Offset padding */
+  }
+
+  tbody tr {
+    min-width: 300px; /* Ensure cards are readable on small screens */
+  }
 }
