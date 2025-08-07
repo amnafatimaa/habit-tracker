@@ -53,7 +53,6 @@ function TodosTable() {
     }
   };
 
-  // READ - This is handled by the todos state (no initial fetch)
 
   // UPDATE - Edit todo
   const handleEdit = async (id) => {
@@ -119,7 +118,7 @@ function TodosTable() {
       )
     );
     
-    // Try to sync with API in background (optional)
+    // Try to sync with API in background
     try {
       const res = await fetch(`${API_BASE}/${id}`, {
         method: 'PATCH',
@@ -321,7 +320,7 @@ function TodosTable() {
           </ul>
         )}
         
-        {/* Todo Count */}
+        /* Todo Count */
         {todos.length > 0 && (
           <div className="mt-6 text-center text-sm text-gray-500">
             {todos.filter(t => !t.isCompleted).length} of {todos.length} todos remaining
